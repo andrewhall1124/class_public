@@ -1,5 +1,5 @@
-from agents.random_agent import RandomAgent
-from environment import SnakeEnv
+from projects.snake.agents.random_agent import RandomAgent
+from projects.snake.environment import SnakeEnv
 
 
 def main() -> None:

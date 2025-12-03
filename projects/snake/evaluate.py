@@ -1,9 +1,9 @@
 import time
 
 import numpy as np
-from agents.base_agent import BaseAgent
-from agents.random_agent import RandomAgent
-from environment import SnakeEnv
+from projects.snake.agents.base_agent import BaseAgent
+from projects.snake.agents.random_agent import RandomAgent
+from projects.snake.environment import SnakeEnv
 
 EvalResults = dict[str, float]
 

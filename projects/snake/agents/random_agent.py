@@ -1,7 +1,7 @@
 import numpy as np
 
-from agents.base_agent import BaseAgent
-from environment import Action
+from projects.snake.agents.base_agent import BaseAgent
+from projects.snake.environment import Action
 
 
 class RandomAgent(BaseAgent):

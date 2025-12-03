@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from environment import Action
+from projects.snake.environment import Action
 
 
 class BaseAgent(ABC):
