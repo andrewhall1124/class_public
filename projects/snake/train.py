@@ -1,4 +1,5 @@
 from projects.snake.agents.random_agent import RandomAgent
+from projects.snake.agents.dqn_agent import DQNAgent
 from projects.snake.environment import SnakeEnv
 
 
@@ -11,6 +12,7 @@ def main() -> None:
     )
 
     agent = RandomAgent(action_space=env.action_space)
+    # agent = DQNAgent(env=env)
 
     # Train the agent
     agent.train(
