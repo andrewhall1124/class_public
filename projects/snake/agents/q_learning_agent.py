@@ -175,7 +175,6 @@ class QLearningAgent(BaseAgent):
                 # 2. Get action
                 # 3. Step snake through grid with action, retrieving reward and done values
                 # 4. Use Q-learning update method to update Q table
-                # 5. Increment counters
                 # #TODO: Write code here:
                 pass
                 #####################################################################
