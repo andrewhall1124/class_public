@@ -1,6 +1,6 @@
 import os
 import pickle
-from collections import defaultdict, deque
+from collections import defaultdict
 from typing import TypeAlias
 
 import numpy as np
