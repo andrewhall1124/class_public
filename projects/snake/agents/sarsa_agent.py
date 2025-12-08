@@ -11,8 +11,6 @@ from projects.snake.agents.base_agent import BaseAgent
 from projects.snake.environment import SnakeEnv, Action
 
 QTable: TypeAlias = defaultdict[tuple[int, ...], NDArray[np.float64]]
-TrainingMetrics: TypeAlias = dict[str, list[float]]
-AgentStats: TypeAlias = dict[str, int | float]
 
 
 class SARSAAgent(BaseAgent):
@@ -54,7 +52,7 @@ class SARSAAgent(BaseAgent):
 
         self.rng: np.random.RandomState = np.random.RandomState(seed)
 
-    def get_action(self, training: bool = True) -> int:
+    def get_action(self, training: bool = True) -> Action:
         """
         Select action using epsilon-greedy policy.
 
@@ -70,11 +68,11 @@ class SARSAAgent(BaseAgent):
 
         # Epsilon-greedy exploration
         if training and self.rng.random() < self.epsilon:
-            return self.rng.randint(0, self.action_space)
+            return Action(self.rng.randint(0, self.action_space))
         else:
             # Exploit: choose best action
             q_values = self.q_table[state_tuple]
-            return np.argmax(q_values)
+            return Action(np.argmax(q_values))
 
     def update(
         self,
@@ -118,10 +116,10 @@ class SARSAAgent(BaseAgent):
         #####################################################################
         # Implement update method for SARSA Agent
         # Note: Be sure to remember the difference in update between Q-learning and SARSA
-        # 1. Get current Q value by using the state tuple and action index 
+        # 1. Get current Q value by using the state tuple and action index
         # 2. If the snake has not reached the food, retrieve the next state using self.env.get_features()
         # 3. Calculate Q-learning target Q value.
-        # 4. Update Q table of the agent. 
+        # 4. Update Q table of the agent.
         # 5. But if the snake has reached the food, update the q table with the reward as the target Q value
         # TODO: Write your code here:
         pass
@@ -166,16 +164,12 @@ class SARSAAgent(BaseAgent):
         print(f"Q-table loaded from {filepath}")
         print(f"Number of states in Q-table: {len(self.q_table)}")
 
-    def get_stats(self) -> AgentStats:
-        """Get statistics about the Q-table."""
-        return {"num_states": len(self.q_table), "epsilon": self.epsilon}
-
     def train(
         self,
         num_episodes: int,
         save_interval: int = 100,
         model_dir: str = "models",
-    ) -> TrainingMetrics:
+    ) -> None:
         """
         Train the agent on the given environment.
 
@@ -187,31 +181,12 @@ class SARSAAgent(BaseAgent):
         Returns:
             dict: Training metrics including episode_rewards and episode_scores
         """
-        print("=" * 50)
-        print("Snake SARSA Training")
-        print("=" * 50)
-        print(f"Episodes: {num_episodes}")
-        print(f"Learning Rate: {self.learning_rate}")
-        print(f"Discount Factor: {self.discount_factor}")
-        print(
-            f"Epsilon: {self.epsilon} -> {self.epsilon_min} (decay: {self.epsilon_decay})"
-        )
-        print("=" * 50)
-
         # Create directories
         os.makedirs(model_dir, exist_ok=True)
-
-        # Metrics tracking
-        episode_rewards = []
-        episode_scores = []
-        reward_window = deque(maxlen=100)
-        score_window = deque(maxlen=100)
 
         # Training loop
         for episode in tqdm(range(1, num_episodes + 1), desc="Training"):
             self.env.reset()
-            total_reward = 0
-            steps = 0
             done = False
 
             # Get initial action using SARSA policy
@@ -232,12 +207,6 @@ class SARSAAgent(BaseAgent):
             # Decay epsilon after episode
             self.decay_epsilon()
 
-            # Track metrics
-            episode_rewards.append(total_reward)
-            episode_scores.append(info["score"])
-            reward_window.append(total_reward)
-            score_window.append(info["score"])
-
             # Save Q-table periodically
             if episode % save_interval == 0:
                 save_path = os.path.join(model_dir, f"sarsa_episode_{episode}.pkl")
@@ -246,17 +215,3 @@ class SARSAAgent(BaseAgent):
         # Final save
         final_path = os.path.join(model_dir, "sarsa_final.pkl")
         self.save(final_path)
-
-        # Print summary
-        print("\n" + "=" * 50)
-        print("Training Complete!")
-        print("=" * 50)
-        print(f"Total Episodes: {len(episode_rewards)}")
-        print(f"Average Reward: {np.mean(episode_rewards):.2f}")
-        print(f"Average Score: {np.mean(episode_scores):.2f}")
-        print(f"Max Score: {np.max(episode_scores):.0f}")
-        print(f"Final Epsilon: {self.epsilon:.3f}")
-        print(f"Q-table States: {len(self.q_table)}")
-        print("=" * 50)
-
-        return {"episode_rewards": episode_rewards, "episode_scores": episode_scores}

@@ -80,8 +80,6 @@ class ReplayBuffer:
         return len(self.buffer)
 
 
-
-
 class DQNAgent(BaseAgent):
     """Deep Q-Network agent with experience replay and target network."""
 

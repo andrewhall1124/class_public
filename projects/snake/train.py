@@ -13,11 +13,10 @@ def main() -> None:
         seed=42,
     )
 
-    # agent = RandomAgent(action_space=env.action_space)
-    agent = QLearningAgent(env=env)
+    agent = RandomAgent(action_space=env.action_space)
+    # agent = QLearningAgent(env=env)
     # agent = SARSAAgent(env=env)
     # agent = DQNAgent(env=env)
-
 
     # Train the agent
     agent.train(
